@@ -1,0 +1,87 @@
+.App {
+  text-align: center;
+  padding: 30px;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+h1.title {
+  font-family: 'Start Jedi Outline';
+  color: #edb800;
+  font-size: 54px
+}
+
+label {
+  color: #edb800 !important;
+}
+
+.timer .timer-digit {
+  font-family: 'Digital-7 Mono';
+  font-size: 200px;
+  color: #edb800;
+}
+
+.timeout.timer span {
+  color: red;
+}
+
+.quotes  {
+  position: absolute;
+  background-color: beige;
+  border: solid 2px black;
+  border-radius: 7px;
+  padding: 9px;
+}
+
+.quotes.yoda {
+  min-width: 250px;
+  margin-left: 150px;
+}
+
+.quotes.vader {
+  color: red;
+  font-weight: 300;
+  margin-left: 300px;
+}
+
+.flex-wrapper {
+  display: flex;
+  flex-direction: row wrap;
+}
+
+.flex-wrapper > * {
+  padding: 5px;
+  flex: 1 100%;
+}
+
+@font-face {
+  font-family: 'Start Jedi Outline';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Start Jedi Outline'), url('./public/fonts/Starjout.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Digital-7 Mono';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Digital-7 Mono'), url('./public/fonts/digital-7 (mono).ttf') format('truetype');
+}
