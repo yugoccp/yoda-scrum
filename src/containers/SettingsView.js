@@ -60,7 +60,7 @@ class SettingsView extends Component {
           <Yoda />
         </div>
 
-        <h1 className="title">Yoda Meeting</h1>
+        <h1 className="title">Yoda DSM</h1>
 
         <Form>
           <Form.Item label="Training time (min):">

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const apiServer = '';
+const apiServer = 'http://localhost:3001';
 
 export function getPadawans() {
   return axios.get(apiServer+'/padawan')
