@@ -25,9 +25,9 @@ export function initMembersSubs() {
 	return (dispatch, getState) => {
 		subscribeMembers((err, respMembers) => {
 			if (!err) {
-				const { members } = getState();
+				const { membersReducer } = getState();
 				respMembers.forEach(member => 
-					members.find(m => m.name === member.name) ?
+					membersReducer.members.find(m => m.name === member.name) ?
 					dispatch(updateMember(member)) :
 					dispatch(addMember(member)))
 			}

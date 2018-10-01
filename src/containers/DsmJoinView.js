@@ -29,6 +29,11 @@ class DsmJoinView extends React.Component {
 		const { dsmCode, name } = this.state;
 		return (
 			<div>
+
+				<div>
+          <h1 className="title">Yoda DSM</h1>
+        </div>
+				
 				<Form>
 					<Form.Item label="DSM code">
 						<Input value={dsmCode} onChange={e => this.setState({dsmCode: e.target.value})}></Input>
