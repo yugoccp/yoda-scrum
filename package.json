@@ -5,14 +5,22 @@
   "dependencies": {
     "antd": "^3.2.1",
     "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
     "highcharts": "^6.0.7",
     "highcharts-react-official": "highcharts/highcharts-react",
     "moment": "^2.21.0",
     "moment-business-days": "^1.0.6",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.1",
-    "react-text-loop": "^1.1.0"
+    "react-text-loop": "^1.1.0",
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.3.0",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1"
   },
   "scripts": {
     "start": "react-scripts start",

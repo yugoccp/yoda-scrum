@@ -1,12 +1,12 @@
 import 'raf/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import StatsView from './StatsView';
+import DsmStatsView from './DsmStatsView';
 
 jest.mock('axios');
 import axios from 'axios';
 
-test('Render StatsView', () => {
+test('Render DsmStatsView', () => {
   const meetings = { data: [
     {
       "padawansData": [
@@ -49,5 +49,5 @@ test('Render StatsView', () => {
   });
   
   const div = document.createElement('div');
-  ReactDOM.render(<StatsView />, div);
+  ReactDOM.render(<DsmStatsView />, div);
 })

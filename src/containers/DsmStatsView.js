@@ -3,7 +3,7 @@ import MeetingHistory from '../components/dashboard/MeetingHistory';
 import TodayMeetingPie from '../components/dashboard/TodayMeetingPie';
 import MeetingDaysBar from '../components/dashboard/MeetingDaysBar';
 import moment from 'moment';
-import { getPadawans, getMeetings } from '../Server';
+import { getPadawans, getMeetings } from '../api';
 
 const StatsCharts = ({data, labels}) => {
 
@@ -25,7 +25,7 @@ const StatsCharts = ({data, labels}) => {
   return <p>Fetching data...</p>
 }
 
-class StatsView extends Component {
+class DsmStatsView extends Component {
 
   constructor(props) {
     super(props);
@@ -79,4 +79,4 @@ class StatsView extends Component {
   }
 }
 
-export default StatsView;
+export default DsmStatsView;
