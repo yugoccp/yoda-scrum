@@ -13,16 +13,19 @@ class DsmJoinView extends React.Component {
 		this.handleJoin = this.handleJoin.bind(this);
 	}
 	
-
 	handleJoin() {
-		const {name} = this.state;
-		if (name && name !== "") {
-			joinDsm(name)
+		const {dsmCode, name} = this.state;
+		if (this.isValid(dsmCode) && this.isValid(name)) {
+			joinDsm(dsmCode, name)
 			.then((res) => {
 				console.log(res)
 				this.props.history.push('/dsm/room')
 			});
 		}
+	}
+
+	isValid(value) {
+		return value && value !== "" 
 	}
 
 	render() {

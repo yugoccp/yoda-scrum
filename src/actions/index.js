@@ -9,6 +9,10 @@ export const isFetchMembersLoading = isLoading => ({type: types.FETCH_MEMBERS_LO
 
 export const fetchMembersSuccess = members => ({type: types.FETCH_MEMBERS_SUCCESS, members})
 
+export function startMeeting() {
+	return dispatch => {}
+}
+
 export function fetchMembers() {
 		return dispatch => {
 			dispatch(isFetchMembersLoading(true));

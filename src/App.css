@@ -76,12 +76,12 @@ label {
   font-family: 'Start Jedi Outline';
   font-style: normal;
   font-weight: normal;
-  src: local('Start Jedi Outline'), url('./public/fonts/Starjout.ttf') format('truetype');
+  src: local('Start Jedi Outline'), url('./assets/fonts/Starjout.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'Digital-7 Mono';
   font-style: normal;
   font-weight: normal;
-  src: local('Digital-7 Mono'), url('./public/fonts/digital-7 (mono).ttf') format('truetype');
+  src: local('Digital-7 Mono'), url('./assets/fonts/digital-7 (mono).ttf') format('truetype');
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import TextLoop from 'react-text-loop';
-import DarthImg from '../../public/img/darth-vader-small.png';
+import DarthImg from '../../assets/img/darth-vader-small.png';
 
 const DarthVader = (props) => (
   <div>

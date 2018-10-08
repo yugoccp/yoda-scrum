@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { addMember, updateMember, fetchMembers } from '../actions';
+import { addMember, updateMember, fetchMembers, startMeeting } from '../actions';
 import { Form, Button, InputNumber, List } from 'antd';
 import { updateTimeout } from '../client';
 
@@ -20,12 +20,20 @@ class DsmRoomView extends Component {
 
   onChangeTimeout(timeout) {
     updateTimeout(timeout);
-  }
+	}
+	
+	startMeeting() {
+
+	}
+
+	inviteMember() {
+
+	}
 
   render() {
 
     const { timeout } = this.state;
-		const { onStartMeeting, onInvite, members } = this.props;
+		const { members } = this.props;
 
     return (
       <div id="dsm-setup-view">
@@ -49,8 +57,8 @@ class DsmRoomView extends Component {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" onClick={() => onInvite()}>Invite Padawans</Button>
-            <Button type="primary" onClick={() => onStartMeeting(timeout, members)}>Start DSM!</Button>
+            <Button type="primary" onClick={this.inviteMember}>Invite Padawans</Button>
+            <Button type="primary" onClick={this.startMeeting}>Start DSM!</Button>
           </Form.Item>
         </Form>
 
@@ -66,6 +74,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   addMember: member => dispatch(addMember(member)),
 	updateMember: member => dispatch(updateMember(member)),
+	startMeeting: () => dispatch(startMeeting),
 	fetchMembers: () => dispatch(fetchMembers())
 })
 

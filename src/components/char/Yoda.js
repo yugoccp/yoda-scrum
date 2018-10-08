@@ -1,6 +1,6 @@
 import React from 'react';
 import TextLoop from 'react-text-loop';
-import YodaImg from '../../public/img/yoda-small.png';
+import YodaImg from '../../assets/img/yoda-small.png';
 
 const Yoda = () => (
   <div>

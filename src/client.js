@@ -1,14 +1,16 @@
 import axios from 'axios';
-import openSocket from 'socket.io-client';
-const apiServer = 'http://192.168.15.5:3001';
-const socket = openSocket(apiServer);
+import io from 'socket.io-client';
+const apiServer = '/api';
+const socket = io();
 
 export function updateTimeout(timeout) {
 	return axios.get(`${apiServer}/dsm/timeout?timeout=${timeout}`);
 }
 
-export function joinDsm(name) {
-	return axios.get(`${apiServer}/dsm/join?name=${name}`);
+export function joinDsm(dsmCode, name) {
+	console.log('emit test');
+	socket.emit('test', "test message");
+	return axios.get(`${apiServer}/dsm/join?dsmCode=${dsmCode}&name=${name}`);
 }
 
 export function getMembers() {
@@ -16,7 +18,9 @@ export function getMembers() {
 }
 
 export function subscribeMembers(cb) {
-	socket.on('members', members => cb(null, members));
+	socket.on('members', function(members) {
+		cb(null, members);
+	});
 }
 
 export function subscribeTimeout(cb) {
