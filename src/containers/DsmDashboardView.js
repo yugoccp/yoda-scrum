@@ -25,7 +25,7 @@ const StatsCharts = ({data, labels}) => {
   return <p>Fetching data...</p>
 }
 
-class DsmStatsView extends Component {
+class DsmDashboardView extends Component {
 
   constructor(props) {
     super(props);
@@ -79,4 +79,4 @@ class DsmStatsView extends Component {
   }
 }
 
-export default DsmStatsView;
+export default DsmDashboardView;

@@ -3,14 +3,12 @@ import io from 'socket.io-client';
 const apiServer = '/api';
 const socket = io();
 
-export function updateTimeout(timeout) {
-	return axios.get(`${apiServer}/dsm/timeout?timeout=${timeout}`);
+export function startDsm() {
+	return axios.get(`${apiServer}/dsm/start`);
 }
 
-export function joinDsm(dsmCode, name) {
-	console.log('emit test');
-	socket.emit('test', "test message");
-	return axios.get(`${apiServer}/dsm/join?dsmCode=${dsmCode}&name=${name}`);
+export function joinDsm(name) {
+	return axios.get(`${apiServer}/dsm/join?name=${name}`);
 }
 
 export function getMembers() {
@@ -23,6 +21,14 @@ export function subscribeMembers(cb) {
 	});
 }
 
-export function subscribeTimeout(cb) {
-	socket.on('timeout', timeout => cb(null, timeout));
+export function subscribeCurrentMemberIndex(cb) {
+	socket.on('currentMemberIndex', function(index) {
+		cb(null, index);
+	});
+}
+
+export function subscribeTimer(cb) {
+	socket.on('timer', function(members) {
+		cb(null, members);
+	});
 }

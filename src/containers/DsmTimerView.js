@@ -5,7 +5,7 @@ import DarthVader from '../components/char/DarthVader';
 
 class DsmTimerView extends React.Component {
   render() {
-    const { timer, timeout, choosenOnes, choosenOne, user, onStart, onComplete } = this.props;
+    const { timer, timeout, members, member} = this.props;
     const overdue = timer > timeout;
     return (
       <div>

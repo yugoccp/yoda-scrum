@@ -21,10 +21,6 @@ class DsmRoomView extends Component {
   onChangeTimeout(timeout) {
     updateTimeout(timeout);
 	}
-	
-	startMeeting() {
-
-	}
 
 	inviteMember() {
 
@@ -33,7 +29,7 @@ class DsmRoomView extends Component {
   render() {
 
     const { timeout } = this.state;
-		const { members } = this.props;
+		const { members, startMeeting } = this.props;
 
     return (
       <div id="dsm-setup-view">
@@ -58,7 +54,7 @@ class DsmRoomView extends Component {
 
           <Form.Item>
             <Button type="primary" onClick={this.inviteMember}>Invite Padawans</Button>
-            <Button type="primary" onClick={this.startMeeting}>Start DSM!</Button>
+            <Button type="primary" onClick={startMeeting}>Start DSM!</Button>
           </Form.Item>
         </Form>
 
@@ -68,7 +64,8 @@ class DsmRoomView extends Component {
 }
 
 const mapStateToProps = state => ({
-  members: state.membersReducer.members
+	members: state.members,
+	member: state.member
 })
 
 const mapDispatchToProps = dispatch => ({
