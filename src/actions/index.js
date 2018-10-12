@@ -1,25 +1,44 @@
-import { getMembers, subscribeMembers, startDsm } from '../client';
+import { 
+	getMembers, 
+	subscribeTimer, 
+	subscribeMembers, 
+	subscribeCurrentMemberIndex, 
+	startDsm, 
+	joinDsm, 
+	nextMember } from '../client';
 import * as types from '../constants/ActionTypes'
 
-export const addMember = member => ({ type: types.ADD_MEMBER, member })
+export const joinSuccess = username => ({ type: types.JOIN_SUCCESS, username })
 
-export const updateMember = member => ({ type: types.UPDATE_MEMBER, member })
+export const currentMemberIndexSuccess = index => ({ type: types.CURRENT_MEMBER_INDEX_SUCCESS, index })
+
+export const updateTimer = timer => ({ type: types.UPDATE_TIMER, timer })
+
+export const updateUsername = username => ({type: types.UPDATE_USERNAME, username})
 
 export const isFetchMembersLoading = isLoading => ({type: types.FETCH_MEMBERS_LOADING, isLoading})
 
 export const fetchMembersSuccess = members => ({type: types.FETCH_MEMBERS_SUCCESS, members})
 
-export function joinMember(member) {
+export function join(name) {
 	return dispatch => {
-		dispatch({ type: types.JOIN_MEMBER, member })
+		return joinDsm(name).then(response => {
+			dispatch(joinSuccess(name));
+		})
 	}
 }
 
-export function startMeeting() {
+export function start() {
 	return dispatch => {
-		startDsm().then(response => {
-			dispatch({ type: types.START_MEETING_SUCCESS, success: true });
-		});
+		startDsm().then(() => {
+			console.log('dsm started!')
+		})
+	}
+}
+
+export function next() {
+	return dispatch => {
+		nextMember()
 	}
 }
 
@@ -42,9 +61,16 @@ export function initSubscriptions() {
 				dispatch(fetchMembersSuccess(members));
 			}
 		});
-
-		subscribeCurrentMember(() => {
-
+		subscribeCurrentMemberIndex((err, index) => {
+			console.log('subscribeCurrentMemberIndex success')
+			if (!err) {
+				dispatch(currentMemberIndexSuccess(index));
+			}
 		});
+		subscribeTimer((err, timer) => {
+			if (!err) {
+				dispatch(updateTimer(timer));
+			}
+		})
 	}
 }

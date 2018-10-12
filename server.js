@@ -4,13 +4,14 @@ const app = express();
 const bodyParser = require('body-parser');
 const server = require('http').createServer(app)
 const io = require('socket.io')(server);
-const utils = require('./src/utils');
 
 let timeout = 2;
 
+let dsm = {};
+
 let members = [];
 
-let currentMemberIndex = 0;
+let currentMemberIndex = undefined;
 
 let currentStartTime = null;
 
@@ -58,14 +59,16 @@ app.get('/api/dsm/members', (req, res) => {
 /**
  * 
  */
-app.get('/api/dsm/start', () => {
+app.get('/api/dsm/start', (req, res) => {
+
 	// Setup DSM
 	dsm.members = members;
 	dsm.date = Date.now();
 	dsm.time = 0;
 	
 	// Shuffle members order
-	members = utils.shuffle(members);
+	members = shuffle(members);
+	console.log('Shuffled members:', members);
 
 	// Emit choosen member
 	currentMemberIndex = 0;
@@ -74,6 +77,8 @@ app.get('/api/dsm/start', () => {
 	io.emit('currentMemberIndex', currentMemberIndex);
 	currentStartTime = Date.now();
 	timerIntervalId = startTimerInterval(currentStartTime);
+	console.log('send response');
+	res.send('ok');
 })
 
 /**
@@ -86,9 +91,9 @@ app.post('/api/dsm/next', (req, res) => {
 	currentMember.timer = Date.now() - currentStartTime;
 	// Update member status
 	currentMember.status = 'DONE';
+	
 	// Go to next member
 	++currentMemberIndex
-	
 	if (currentMemberIndex < members.length) {
 		// Emit next selected member index
 		currentStartTime = Date.now();
@@ -97,6 +102,7 @@ app.post('/api/dsm/next', (req, res) => {
 		// Emit null selected member
 		io.emit('currentMemberIndex', -1);
 	}
+	res.send('ok');
 });
 
 function startTimerInterval(startTime) {
@@ -106,7 +112,26 @@ function startTimerInterval(startTime) {
 	}, 100);
 }	
 
-const API_PORT = 3001;
+function shuffle(array){
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+const API_PORT = 3333;
 server.listen(API_PORT, () => {
 	console.log(`Listen to port ${API_PORT}`);
 });

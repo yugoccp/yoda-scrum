@@ -1,56 +1,57 @@
-import React from 'react'
+import React from 'react';
+import {connect} from 'react-redux';
 import { Form, Button, Input } from 'antd';
-import { joinDsm } from '../client';
+import { join } from '../actions';
+import { Redirect } from 'react-router-dom';
 
 class DsmJoinView extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			dsmCode: "DSM001",
-			name: ""
+			name: ''
 		}
 		this.handleJoin = this.handleJoin.bind(this);
 	}
 	
 	handleJoin() {
-		const {dsmCode, name} = this.state;
-		if (this.isValid(dsmCode) && this.isValid(name)) {
-			joinDsm(dsmCode, name)
-			.then((res) => {
-				console.log(res)
-				this.props.history.push('/dsm/room')
-			});
+		const {name} = this.state;
+		if (name && name !== "") {
+			this.props.join(name)
 		}
 	}
 
-	isValid(value) {
-		return value && value !== "" 
-	}
-
 	render() {
-		const { dsmCode, name } = this.state;
-		return (
-			<div>
-
+		const { username } = this.props;
+		if (username && username.length > 0) {
+			return <Redirect to="/dsm/room" />
+		} else {
+			const { name } = this.state;
+			return (
 				<div>
-          <h1 className="title">Yoda DSM</h1>
-        </div>
-				
-				<Form>
-					<Form.Item label="DSM code">
-						<Input value={dsmCode} onChange={e => this.setState({dsmCode: e.target.value})}></Input>
-					</Form.Item>
-					<Form.Item label="Name">
-						<Input value={name} onChange={e => this.setState({name: e.target.value})}></Input>
-					</Form.Item>
-					<Form.Item>
-						<Button type="primary" onClick={this.handleJoin}>Join DSM</Button>
-					</Form.Item>
-				</Form>
-			</div>
-		);
+					<div>
+						<h1 className="title">Yoda DSM</h1>
+					</div>
+					<Form>
+						<Form.Item label="Name">
+							<Input value={name} onChange={e => this.setState({name: e.target.value})}></Input>
+						</Form.Item>
+						<Form.Item>
+							<Button type="primary" onClick={this.handleJoin}>Join DSM</Button>
+						</Form.Item>
+					</Form>
+				</div>
+			);
+		}
 	}
 }
 
-export default DsmJoinView
+const mapStateToProps = state => ({
+	username: state.username
+})
+
+const mapDispatchToProps = dispatch => ({
+	join: name => dispatch(join(name))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(DsmJoinView)
