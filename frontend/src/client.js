@@ -3,7 +3,6 @@ import io from 'socket.io-client';
 import * as WsTypes from './constants/WsTypes';
 const apiServer = '/api';
 const socket = io();
-
 const wsCallback = {}
 
 /**

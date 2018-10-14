@@ -10,10 +10,6 @@
     "socket.io": "^2.1.1"
   },
   "scripts": {
-    "start": "concurrently --kill-others \"npm run start-app\" \"npm run start-server\"",
-    "start-app": "react-app-rewired start",
-    "start-server": "node ./server/src/server.js",
-    "build": "react-app-rewired build",
-    "test": "jest"
+    "start": "node ./src/server.js"
   }
 }
