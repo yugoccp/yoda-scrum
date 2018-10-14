@@ -10,7 +10,7 @@ import Timer from '../components/Timer';
 import DarthVader from '../components/char/DarthVader';
 
 // Setup timeout to 2 minutes
-const timeout = 1000*2;
+const timeout = 1000*60*2;
 
 const ListItem = function({item}) {
 	const avatarImg = item.status !== 'DONE'  ? R2d2Img : item.timeInMs > timeout ? StormtrooperImg : JediImg;

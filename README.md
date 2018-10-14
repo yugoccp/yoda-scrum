@@ -12,11 +12,11 @@ To run the frontend app, go to /frontend folder and run the following
 
 ## Libraries
 #### Backend
-ExpressJS
-SocketIO
+* ExpressJS
+* SocketIO
 
 #### Frontend
-React
-React-Redux
-AntD
-SocketIO-Client
+* React
+* React-Redux
+* AntD
+* SocketIO-Client
