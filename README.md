@@ -10,12 +10,16 @@ To run the frontend app, go to /frontend folder and run the following
 
     npm start
 
+This above command will start a Webpack-Dev-Server to serve frontend app and the ExpressJS API server.
+Webpack-Dev-Server is configured to redirect every request to api/* and /socket.io/* to API server.
+
 ## Libraries
 #### Backend
 * ExpressJS
 * SocketIO
 
 #### Frontend
+* Webpack
 * React
 * React-Redux
 * AntD
