@@ -32,15 +32,8 @@ function buildHistoryLine(data) {
 }
 
 const MeetingHistory = ({ data }) => {
-
   if (data.length > 0) {
-
-		console.log(data);
-
     const historyLine = buildHistoryLine(data);
-
-		console.log(historyLine);
-		
     const options = {
       title: {
         text: 'Meetings History'

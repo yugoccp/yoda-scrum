@@ -2,11 +2,28 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Button, List } from 'antd';
+import StormtrooperImg from '../assets/img/stormtrooper-head.png';
+import JediImg from '../assets/img/jedi-head.png';
+import R2d2Img from '../assets/img/r2d2-icon.png';
 import { next, fetchMembers } from '../actions';
 import Timer from '../components/Timer';
 import DarthVader from '../components/char/DarthVader';
 
+// Setup timeout to 2 minutes
 const timeout = 1000*2;
+
+const ListItem = function({item}) {
+	const avatarImg = item.status !== 'DONE'  ? R2d2Img : item.timeInMs > timeout ? StormtrooperImg : JediImg;
+	return (
+		<List.Item>
+			<List.Item.Meta
+				avatar={<img src={avatarImg} alt='img'/>}
+				title={<p style={{color: "white"}}>{item.name}</p>}
+			/>
+			<div>{item.timeInMs}</div>
+		</List.Item>);
+}
+
 class DsmTimerView extends React.Component {
 
 	componentDidMount() {
@@ -23,26 +40,26 @@ class DsmTimerView extends React.Component {
 			const overdue = timer > timeout;
 			return (
 				<div>
-					{ overdue && currentMember.name === username &&
-						<div style={{position: "absolute", left:"50px", top: "30px"}}>
-							<DarthVader name={currentMember.name} />
-						</div>
-					}
 					<div>
 						<Timer currentMs={timer} styleClass={overdue ? 'timer timeout' : 'timer'}/>
 						<List
+							style={{color: "white"}}
 							bordered
-							dataSource={members.map(m => m.name)}
-							renderItem={item => (<List.Item>{item}</List.Item>)}
-						></List>
+							dataSource={members}
+							renderItem={item => (<ListItem item={item} />)}
+							></List>
 						<div>
 							<Button type="primary" onClick={next}>Next</Button>
 						</div>
 					</div>
+					{ overdue && currentMember.name === username &&
+						<div>
+							<DarthVader name={currentMember.name} />
+						</div>
+					}
 				</div>
 			);
 		}
-
   }
 }
 

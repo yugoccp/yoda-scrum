@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import { Form, Button, Input } from 'antd';
 import { join } from '../actions';
 import { Redirect } from 'react-router-dom';
+import Yoda from '../components/char/Yoda';
 
 class DsmJoinView extends React.Component {
 
@@ -40,6 +41,7 @@ class DsmJoinView extends React.Component {
 							<Button type="primary" onClick={this.handleJoin}>Join DSM</Button>
 						</Form.Item>
 					</Form>
+					<Yoda />
 				</div>
 			);
 		}

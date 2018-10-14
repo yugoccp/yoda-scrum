@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import MeetingHistory from '../components/dashboard/MeetingHistory';
-// import TodayMeetingPie from '../components/dashboard/TodayMeetingPie';
-// import MeetingDaysBar from '../components/dashboard/MeetingDaysBar';
+import TodayMeetingPie from '../components/dashboard/TodayMeetingPie';
 import { fetchDsmData } from '../actions'
 
 class DsmDashboardView extends Component {
@@ -20,16 +19,13 @@ class DsmDashboardView extends Component {
 				{
 					isDsmDataLoading ? 
 					<p>Fetching data...</p> :
-					<div className="flex-wrapper">
-						<div className="flex-item flex-item-lg">
+					<div>
+						<div className="col-sm-12 col-md-6">
 							<MeetingHistory data={ dsmData } />
 						</div>
-						{/* <div className="flex-item flex-item-sm">
-							<TodayMeetingPie data={ dsmData } labels={members} />
+						<div className="col-sm-12 col-md-6">
+							<TodayMeetingPie data={ members } />
 						</div>
-						<div className="flex-item flex-item-sm">
-							<MeetingDaysBar data={ dsmData } />
-						</div> */}
 					</div>
 				}
 			</div>);
@@ -46,4 +42,4 @@ const mapDispatchToProps = dispatch => ({
 	fetchDsmData: () => dispatch(fetchDsmData())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(DsmDashboardView);
+export default connect(mapStateToProps, mapDispatchToProps)(DsmDashboardView)

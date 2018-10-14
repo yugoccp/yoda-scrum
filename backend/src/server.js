@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const utils = require('./utils');
+const dataProvider = require('./providers/fileDataProvider');
 
 let members = [];
 
@@ -14,12 +15,10 @@ let currentStartTime = null;
 
 let timerIntervalId = null;
 
-let dsmData = [];
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
-app.use(express.static('../../build'));
+app.use(express.static('../../frontend/build'));
 
 io.on('connection', (socket) => {
 	console.log('a user connected');
@@ -28,9 +27,6 @@ io.on('connection', (socket) => {
 	});
 });
 
-/**
- * 
- */
 app.get('/api/dsm/join', (req, res) => {
 	const name = req.query.name
 	if (!members.find(m => m.name === name)) {
@@ -46,16 +42,10 @@ app.get('/api/dsm/join', (req, res) => {
 	}
 });
 
-/**
- * 
- */
 app.get('/api/dsm/members', (req, res) => {
 	res.send(JSON.stringify(members));
 });
 
-/**
- * 
- */
 app.get('/api/dsm/start', (req, res) => {
 	// Shuffle members order
 	members = utils.shuffle(members);
@@ -70,20 +60,18 @@ app.get('/api/dsm/start', (req, res) => {
 	res.send('ok');
 })
 
-/**
- * 
- */
 app.get('/api/dsm/next', (req, res) => {
 	// Stop timer
 	clearInterval(timerIntervalId);
 	timerIntervalId = null;
-
 	const currentMember = members[currentMemberIndex];
 
 	// Update member time
 	currentMember.timeInMs = Date.now() - currentStartTime;
 	// Update member status
 	currentMember.status = 'DONE';
+	io.emit('members', members);
+
 	// Go to next member
 	++currentMemberIndex
 
@@ -95,21 +83,21 @@ app.get('/api/dsm/next', (req, res) => {
 	} else {
 		// Store current DSM data
 		const timeInMs = members.reduce((time, m) => time += m.timeInMs, 0);
-		dsmData.push({
+		dataProvider.saveDsm({
 			members,
 			timeInMs,
 			date: Date.now()
 		});
+		// Reset members data
+		members = [];
 		// Emit invalid selected member index
 		io.emit('currentMemberIndex', -1);
 	}
 	res.send('ok');
 });
 
-/**
- * 
- */
 app.get('/api/dsm/data', (req, res) => {
+	const dsmData = dataProvider.findAllDsm();
 	res.send(dsmData);
 });
 

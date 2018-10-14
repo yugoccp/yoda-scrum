@@ -11,19 +11,15 @@ class DsmRoomView extends Component {
 	}
 
   render() {
-
 		const { members, start, currentMemberIndex } = this.props;
-
 		if (currentMemberIndex >= 0) {
 			return <Redirect to="/dsm/timer" />
 		} else {
 			return (
 				<div id="dsm-setup-view">
-	
 					<div>
 						<h1 className="title">Yoda DSM</h1>
 					</div>
-	
 					<Form>
 						<Form.Item label="The choosen ones: ">
 							<List
@@ -33,12 +29,10 @@ class DsmRoomView extends Component {
 								renderItem={item => (<List.Item>{item}</List.Item>)}
 							></List>
 						</Form.Item>
-	
 						<Form.Item>
 							<Button type="primary" onClick={start}>Start DSM!</Button>
 						</Form.Item>
 					</Form>
-	
 				</div>
 			);
 		}

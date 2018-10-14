@@ -6,14 +6,19 @@ const socket = io();
 
 const wsCallback = {}
 
+/**
+ * Register callbacks for websocket messages
+ */
 export function subscribe(wsType, cb) {
 	wsCallback[wsType] = wsCallback[wsType] ? wsCallback[wsType] : [];
 	wsCallback[wsType].push(cb);
 }
 
+/**
+ * Create listeners for each websocket message type
+ */
 Object.values(WsTypes).forEach(type => {
 	socket.on(type, function(message) {
-		console.log(type, message);
 		if (wsCallback[type]) {
 			wsCallback[type].forEach(cb => {
 				cb(message);
