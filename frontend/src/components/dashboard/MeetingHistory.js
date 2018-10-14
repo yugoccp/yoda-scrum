@@ -2,25 +2,20 @@ import React from 'react';
 import Highcharts from 'highcharts/highcharts'
 import HighchartsReact from 'highcharts-react-official'
 
-function buildHistoryLine(data, labels) {
-
-  if(labels.length === 0 || data.length === 0) {
-    console.log("No data, no history...");
-    return [];
-  }
+function buildHistoryLine(data) {
 
   const historyLineData = data.reduce((result, d) => {
 
-      result['meeting'].data.push([d.date.valueOf(), d.timeInSec]);
+      result['meeting'].data.push([d.date, d.timeInMs]);
 
-      d.padawansData.forEach(pd => {
-        if (result[pd.username]) {
-          result[pd.username].data.push([d.date.valueOf(), pd.timeInSec]);
+      d.members.forEach(m => {
+        if (result[m.name]) {
+          result[m.name].data.push([d.date, m.timeInMs]);
         } else {
-          result[pd.username] = {
+          result[m.name] = {
+            name: m.name,
             type: 'spline',
-            name: labels[pd.username],
-            data: [[d.date.valueOf(), pd.timeInSec]]
+            data: [[d.date, m.timeInMs]]
           };
         }
       })
@@ -36,12 +31,16 @@ function buildHistoryLine(data, labels) {
   return Object.values(historyLineData);
 }
 
-const MeetingHistory = ({ data, labels }) => {
+const MeetingHistory = ({ data }) => {
 
   if (data.length > 0) {
 
-    const historyLine = buildHistoryLine(data, labels);
+		console.log(data);
 
+    const historyLine = buildHistoryLine(data);
+
+		console.log(historyLine);
+		
     const options = {
       title: {
         text: 'Meetings History'
@@ -59,7 +58,7 @@ const MeetingHistory = ({ data, labels }) => {
       />
   }
 
-  return <p>No data yet...</p>
+  return <p>No data, no history...</p>
 
 }
 

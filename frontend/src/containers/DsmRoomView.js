@@ -14,7 +14,7 @@ class DsmRoomView extends Component {
 
 		const { members, start, currentMemberIndex } = this.props;
 
-		if (currentMemberIndex && currentMemberIndex >= 0) {
+		if (currentMemberIndex >= 0) {
 			return <Redirect to="/dsm/timer" />
 		} else {
 			return (

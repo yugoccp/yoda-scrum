@@ -1,5 +1,5 @@
 {
-  "name": "yoda-meeting-app",
+  "name": "yoda-scrum-frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -26,7 +26,7 @@
   "scripts": {
     "start": "concurrently --kill-others \"npm run start-app\" \"npm run start-server\"",
     "start-app": "react-app-rewired start",
-    "start-server": "node ./server.js",
+    "start-server": "node ../backend/src/server.js",
     "build": "react-app-rewired build",
     "test": "jest"
   },

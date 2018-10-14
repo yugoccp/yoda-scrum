@@ -2,20 +2,19 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
-const server = require('http').createServer(app)
+const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-
-let timeout = 2;
-
-let dsm = {};
+const utils = require('./utils');
 
 let members = [];
 
-let currentMemberIndex = undefined;
+let currentMemberIndex = -1;
 
 let currentStartTime = null;
 
 let timerIntervalId = null;
+
+let dsmData = [];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,12 +22,10 @@ app.use(cors());
 app.use(express.static('../../build'));
 
 io.on('connection', (socket) => {
-	
 	console.log('a user connected');
 	socket.on('disconnect', function() {
     console.log('user disconnected');
 	});
-
 });
 
 /**
@@ -40,7 +37,7 @@ app.get('/api/dsm/join', (req, res) => {
 		members.push({
 			name,
 			status: 'PENDING',
-			time: 0
+			timeInMs: 0
 		});
 		io.emit('members', members);
 		res.send('ok');
@@ -60,15 +57,8 @@ app.get('/api/dsm/members', (req, res) => {
  * 
  */
 app.get('/api/dsm/start', (req, res) => {
-
-	// Setup DSM
-	dsm.members = members;
-	dsm.date = Date.now();
-	dsm.time = 0;
-	
 	// Shuffle members order
-	members = shuffle(members);
-	console.log('Shuffled members:', members);
+	members = utils.shuffle(members);
 
 	// Emit choosen member
 	currentMemberIndex = 0;
@@ -77,58 +67,61 @@ app.get('/api/dsm/start', (req, res) => {
 	io.emit('currentMemberIndex', currentMemberIndex);
 	currentStartTime = Date.now();
 	timerIntervalId = startTimerInterval(currentStartTime);
-	console.log('send response');
 	res.send('ok');
 })
 
 /**
  * 
  */
-app.post('/api/dsm/next', (req, res) => {
+app.get('/api/dsm/next', (req, res) => {
 	// Stop timer
 	clearInterval(timerIntervalId);
+	timerIntervalId = null;
+
+	const currentMember = members[currentMemberIndex];
+
 	// Update member time
-	currentMember.timer = Date.now() - currentStartTime;
+	currentMember.timeInMs = Date.now() - currentStartTime;
 	// Update member status
 	currentMember.status = 'DONE';
-	
 	// Go to next member
 	++currentMemberIndex
+
 	if (currentMemberIndex < members.length) {
 		// Emit next selected member index
 		currentStartTime = Date.now();
 		io.emit('currentMemberIndex', currentMemberIndex);
+		timerIntervalId = startTimerInterval(currentStartTime);
 	} else {
-		// Emit null selected member
+		// Store current DSM data
+		const timeInMs = members.reduce((time, m) => time += m.timeInMs, 0);
+		dsmData.push({
+			members,
+			timeInMs,
+			date: Date.now()
+		});
+		// Emit invalid selected member index
 		io.emit('currentMemberIndex', -1);
 	}
 	res.send('ok');
 });
 
+/**
+ * 
+ */
+app.get('/api/dsm/data', (req, res) => {
+	res.send(dsmData);
+});
+
 function startTimerInterval(startTime) {
-	return setInterval(() => {
-		const currentTimer = Date.now() - startTime;
-		io.emit('timer', currentTimer);
-	}, 100);
-}	
-
-function shuffle(array){
-  var currentIndex = array.length, temporaryValue, randomIndex;
-
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
+	if (timerIntervalId) {
+		return timerIntervalId;
+	} else {
+		return setInterval(() => {
+			const currentTimer = Date.now() - startTime;
+			io.emit('timer', currentTimer);
+		}, 100);
+	}
 }
 
 const API_PORT = 3333;

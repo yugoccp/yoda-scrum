@@ -1,11 +1,11 @@
 import { 
-	getMembers, 
-	subscribeTimer, 
-	subscribeMembers, 
-	subscribeCurrentMemberIndex, 
+	subscribe,
+	getMembers,
+	getDsmData,
 	startDsm, 
 	joinDsm, 
 	nextMember } from '../client';
+import * as wsTypes from '../constants/WsTypes'
 import * as types from '../constants/ActionTypes'
 
 export const joinSuccess = username => ({ type: types.JOIN_SUCCESS, username })
@@ -20,6 +20,10 @@ export const isFetchMembersLoading = isLoading => ({type: types.FETCH_MEMBERS_LO
 
 export const fetchMembersSuccess = members => ({type: types.FETCH_MEMBERS_SUCCESS, members})
 
+export const isFetchDsmDataLoading = isLoading => ({type: types.FETCH_DSM_DATA_LOADING, isLoading})
+
+export const fetchDsmDataSuccess = dsmData => ({type: types.FETCH_DSM_DATA_SUCCESS, dsmData})
+
 export function join(name) {
 	return dispatch => {
 		return joinDsm(name).then(response => {
@@ -31,14 +35,28 @@ export function join(name) {
 export function start() {
 	return dispatch => {
 		startDsm().then(() => {
-			console.log('dsm started!')
+			console.log('dsm started!');
 		})
 	}
 }
 
 export function next() {
 	return dispatch => {
-		nextMember()
+		nextMember().then(() => {
+			console.log('go to next');
+		})
+	}
+}
+
+export function fetchDsmData() {
+	return dispatch => {
+		dispatch(isFetchDsmDataLoading(true));
+		getDsmData()
+		.then(response => {
+			dispatch(fetchDsmDataSuccess(response.data));
+			dispatch(isFetchDsmDataLoading(false));
+		})
+		.catch(err => console.log(err));
 	}
 }
 
@@ -55,22 +73,9 @@ export function fetchMembers() {
 }
 
 export function initSubscriptions() {
-	return (dispatch, getState) => {
-		subscribeMembers((err, members) => {
-			if (!err) {
-				dispatch(fetchMembersSuccess(members));
-			}
-		});
-		subscribeCurrentMemberIndex((err, index) => {
-			console.log('subscribeCurrentMemberIndex success')
-			if (!err) {
-				dispatch(currentMemberIndexSuccess(index));
-			}
-		});
-		subscribeTimer((err, timer) => {
-			if (!err) {
-				dispatch(updateTimer(timer));
-			}
-		})
+	return dispatch => {
+		subscribe(wsTypes.MEMBERS, members => dispatch(fetchMembersSuccess(members)));
+		subscribe(wsTypes.CURRENT_MEMBER_INDEX, index => dispatch(currentMemberIndexSuccess(index)));
+		subscribe(wsTypes.TIMER, timer => dispatch(updateTimer(timer)));
 	}
 }

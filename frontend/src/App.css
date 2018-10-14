@@ -32,11 +32,19 @@ h1.title {
 label {
   color: #edb800 !important;
 }
-
-.timer .timer-digit {
-  font-family: 'Digital-7 Mono';
-  font-size: 200px;
-  color: #edb800;
+@media only screen and (min-width: 600px) {
+	.timer .timer-digit {
+		font-family: 'Digital-7 Mono';
+		font-size: 80px;
+		color: #edb800;
+	}
+}
+@media only screen and (min-width: 992px) {
+	.timer .timer-digit {
+		font-family: 'Digital-7 Mono';
+		font-size: 200px;
+		color: #edb800;
+	}
 }
 
 .timeout.timer span {

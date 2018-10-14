@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import DsmRoomView from './containers/DsmRoomView';
 import DsmJoinView from './containers/DsmJoinView';
 import DsmTimerView from './containers/DsmTimerView';
 import { initSubscriptions } from './actions';
-// import DsmStatsView from './containers/DsmStatsView';
+import DsmDashboardView from './containers/DsmDashboardView';
 import './App.css';
 
 class App extends Component {
 
 	componentDidMount() {
-		initSubscriptions();
+		this.props.initSubscriptions();
 	}
 
   render() {
@@ -22,6 +23,7 @@ class App extends Component {
 							<Route exact path="/dsm/join" component={DsmJoinView}></Route>
 							<Route exact path="/dsm/room" component={DsmRoomView}></Route>
 							<Route exact path="/dsm/timer" component={DsmTimerView}></Route>
+							<Route exact path="/dsm/dashboard" component={DsmDashboardView}></Route>
 						</Switch>
 					</BrowserRouter>
         </div>
@@ -29,4 +31,11 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = dispatch => ({
+});
+
+const mapDispatchToProps = dispatch => ({
+	initSubscriptions: () => dispatch(initSubscriptions())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
