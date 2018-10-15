@@ -13,13 +13,26 @@ class DsmJoinView extends React.Component {
 			name: ''
 		}
 		this.handleJoin = this.handleJoin.bind(this);
+		this.handleUser = this.handleUser.bind(this);
 	}
 	
 	handleJoin() {
 		const {name} = this.state;
 		if (name && name !== "") {
-			this.props.join(name)
+			this.props.join(name);
+			localStorage.setItem('username', name);
 		}
+	}
+
+	handleUser() {
+		const username = localStorage.getItem('username');
+		if (username) {
+			this.setState({name: username});
+		}
+	}
+
+	componentDidMount() {
+		this.handleUser();
 	}
 
 	render() {
