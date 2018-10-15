@@ -1,5 +1,5 @@
 # Yoda Scrum
-Daily Stand-up Meeting timer with Star Wars theme :)
+Daily Stand-up Meeting timer with Star Wars theme made for [Hacktoberfest](https://hacktoberfest.digitalocean.com/) :)
 
 ## Development
 Before run the app, install dependencies for both /frontend and /backend projects:
