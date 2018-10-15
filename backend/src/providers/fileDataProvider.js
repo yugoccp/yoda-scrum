@@ -3,7 +3,12 @@
  */
 const fs = require('fs');
 const path = require('path');
-const DATA_PATH = path.resolve(__dirname, '../../data/data.json');
+const FILE_PATH = '../../data/data.json';
+let DATA_PATH;
+
+fs.access(FILE_PATH, fs.constants.F_OK, (err) => {
+	DATA_PATH = err ? path.resolve(__dirname, './default.json') : path.resolve(__dirname, FILE_PATH);
+});
 
 /**
  * Read file and retrieve DSM data.
