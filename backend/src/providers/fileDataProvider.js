@@ -6,8 +6,38 @@ const path = require('path');
 const FILE_PATH = '../../data/data.json';
 let DATA_PATH;
 
+/**
+ * Create dir and file with default contents
+ */
+function createDataFile() {
+	const dir = __dirname + '/../../data';
+	if (!fs.existsSync(dir)){
+		fs.mkdirSync(dir);
+	}
+
+  const read = fs.createReadStream(__dirname + '/default.json');
+  read.on("error", function(err) {
+		read.destroy(err);
+		console.log('Read error: ' + err);
+	});
+
+  const write = fs.createWriteStream(`${__dirname}/${FILE_PATH}`);
+  write.on("error", function(err) {
+		write.destroy(err);
+		console.log('Write error: ' + err);
+	});
+
+	read.pipe(write);
+}
+
+/**
+ * Check if data file exists and set path
+ */
 fs.access(FILE_PATH, fs.constants.F_OK, (err) => {
-	DATA_PATH = err ? path.resolve(__dirname, './default.json') : path.resolve(__dirname, FILE_PATH);
+	if (err) {
+		createDataFile();
+	};
+	DATA_PATH = path.resolve(__dirname, FILE_PATH);
 });
 
 /**
