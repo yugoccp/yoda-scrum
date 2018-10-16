@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const FILE_PATH = '../../data/data.json';
-let DATA_PATH;
+const DATA_PATH = path.resolve(__dirname, FILE_PATH);
 
 /**
  * Create dir and file with default contents
@@ -33,11 +33,11 @@ function createDataFile() {
 /**
  * Check if data file exists and set path
  */
-fs.access(FILE_PATH, fs.constants.F_OK, (err) => {
+fs.access(DATA_PATH, fs.constants.F_OK, (err) => {
 	if (err) {
+		console.log("No data.json file found, creating a new one...")
 		createDataFile();
 	};
-	DATA_PATH = path.resolve(__dirname, FILE_PATH);
 });
 
 /**
