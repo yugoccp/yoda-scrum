@@ -42,11 +42,6 @@ class DsmTimerView extends React.Component {
 						<div>
 							<h1 style={{color: "white"}}>{meetingStatusMessage}</h1>
 						</div>
-						{ overdue && currentMember.name === username &&
-							<div>
-								<DarthVader name={currentMember.name} />
-							</div>
-						}
 					</div>
 				);
 			case 'IN_PROGRESS':
@@ -71,10 +66,6 @@ class DsmTimerView extends React.Component {
 						}
 					</div>
 				);
-				// if (currentMemberIndex < 0) {
-				// 	return <Redirect to='/dsm/dashboard'/>
-				// } else {
-				// }
 			case 'FINISHED':
 				return <Redirect to='/dsm/dashboard'/>;
 			default:
@@ -83,11 +74,6 @@ class DsmTimerView extends React.Component {
 						<div>
 							<h1 style={{color: "white"}}>{meetingStatusMessage}</h1>
 						</div>
-						{ overdue && currentMember.name === username &&
-							<div>
-								<DarthVader name={currentMember.name} />
-							</div>
-						}
 					</div>
 				);
 		};
