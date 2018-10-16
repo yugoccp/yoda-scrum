@@ -31,35 +31,66 @@ class DsmTimerView extends React.Component {
 	}
 
   render() {
-		const { username, timer, members, currentMemberIndex, next } = this.props;
-
-		if (currentMemberIndex < 0) {
-			return <Redirect to='/dsm/dashboard'/>
-		} else {
-			const currentMember = members[currentMemberIndex];
-			const overdue = timer > timeout;
-			return (
-				<div>
+		const { username, timer, members, currentMemberIndex, next, meetingStatus } = this.props;
+		const currentMember = members[currentMemberIndex];
+		const overdue = timer > timeout;
+		const meetingStatusMessage = "Waiting meeting to start...";
+		switch (meetingStatus) {
+			case 'WAITING':
+				return (
 					<div>
-						<Timer currentMs={timer} styleClass={overdue ? 'timer timeout' : 'timer'}/>
-						<List
-							style={{color: "white"}}
-							bordered
-							dataSource={members}
-							renderItem={item => (<ListItem item={item} />)}
-							></List>
 						<div>
-							<Button type="primary" onClick={next}>Next</Button>
+							<h1 style={{color: "white"}}>{meetingStatusMessage}</h1>
 						</div>
+						{ overdue && currentMember.name === username &&
+							<div>
+								<DarthVader name={currentMember.name} />
+							</div>
+						}
 					</div>
-					{ overdue && currentMember.name === username &&
+				);
+			case 'IN_PROGRESS':
+				return (
+					<div>
 						<div>
-							<DarthVader name={currentMember.name} />
+							<Timer currentMs={timer} styleClass={overdue ? 'timer timeout' : 'timer'}/>
+							<List
+								style={{color: "white"}}
+								bordered
+								dataSource={members}
+								renderItem={item => (<ListItem item={item} />)}
+								></List>
+							<div>
+								<Button type="primary" onClick={next}>Next</Button>
+							</div>
 						</div>
-					}
-				</div>
-			);
-		}
+						{ overdue && currentMember.name === username &&
+							<div>
+								<DarthVader name={currentMember.name} />
+							</div>
+						}
+					</div>
+				);
+				// if (currentMemberIndex < 0) {
+				// 	return <Redirect to='/dsm/dashboard'/>
+				// } else {
+				// }
+			case 'FINISHED':
+				return <Redirect to='/dsm/dashboard'/>;
+			default:
+				return (
+					<div>
+						<div>
+							<h1 style={{color: "white"}}>{meetingStatusMessage}</h1>
+						</div>
+						{ overdue && currentMember.name === username &&
+							<div>
+								<DarthVader name={currentMember.name} />
+							</div>
+						}
+					</div>
+				);
+		};
   }
 }
 
@@ -67,7 +98,8 @@ const mapStateToProps = state => ({
 	members: state.members,
 	username: state.username,
 	currentMemberIndex: state.currentMemberIndex,
-	timer: state.timer
+	timer: state.timer,
+	meetingStatus: state.meetingStatus
 })
 
 const mapDispatchToProps = dispatch => ({

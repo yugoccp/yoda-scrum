@@ -13,6 +13,9 @@ let currentMemberIndex = -1;
 
 let currentStartTime = null;
 
+let meetingStatus = 'WAITING';
+io.emit('meetingStatus', meetingStatus);
+
 let timerIntervalId = null;
 
 app.use(bodyParser.json());
@@ -36,6 +39,9 @@ app.get('/api/dsm/join', (req, res) => {
 			timeInMs: 0
 		});
 		io.emit('members', members);
+		// Change meeting status
+		meetingStatus = 'WAITING';
+		io.emit('meetingStatus', meetingStatus);
 		res.send('ok');
 	} else {
 		res.send(new Error(`"${name}" is already in use.`));
@@ -47,6 +53,9 @@ app.get('/api/dsm/members', (req, res) => {
 });
 
 app.get('/api/dsm/start', (req, res) => {
+	// Change meeting status
+	meetingStatus = 'IN_PROGRESS';
+	io.emit('meetingStatus', meetingStatus);
 	// Shuffle members order
 	members = utils.shuffle(members);
 
@@ -90,6 +99,9 @@ app.get('/api/dsm/next', (req, res) => {
 		});
 		// Reset members data
 		members = [];
+		// Change meeting status
+		meetingStatus = 'FINISHED';
+		io.emit('meetingStatus', meetingStatus);
 		// Emit invalid selected member index
 		io.emit('currentMemberIndex', -1);
 	}

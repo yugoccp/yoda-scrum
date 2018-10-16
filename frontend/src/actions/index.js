@@ -1,9 +1,9 @@
-import { 
+import {
 	subscribe,
 	getMembers,
 	getDsmData,
-	startDsm, 
-	joinDsm, 
+	startDsm,
+	joinDsm,
 	nextMember } from '../client';
 import * as wsTypes from '../constants/WsTypes'
 import * as types from '../constants/ActionTypes'
@@ -23,6 +23,8 @@ export const fetchMembersSuccess = members => ({type: types.FETCH_MEMBERS_SUCCES
 export const isFetchDsmDataLoading = isLoading => ({type: types.FETCH_DSM_DATA_LOADING, isLoading})
 
 export const fetchDsmDataSuccess = dsmData => ({type: types.FETCH_DSM_DATA_SUCCESS, dsmData})
+
+export const meetingStatusSuccess = meetingStatus => ({type: types.MEETING_STATUS_SUCCESS, meetingStatus})
 
 export function join(name) {
 	return dispatch => {
@@ -75,6 +77,7 @@ export function fetchMembers() {
 export function initSubscriptions() {
 	return dispatch => {
 		subscribe(wsTypes.MEMBERS, members => dispatch(fetchMembersSuccess(members)));
+		subscribe(wsTypes.MEETING_STATUS, meetingStatus => dispatch(meetingStatusSuccess(meetingStatus)));
 		subscribe(wsTypes.CURRENT_MEMBER_INDEX, index => dispatch(currentMemberIndexSuccess(index)));
 		subscribe(wsTypes.TIMER, timer => dispatch(updateTimer(timer)));
 	}
