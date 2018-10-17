@@ -49,6 +49,9 @@ class DsmTimerView extends React.Component {
 				return (
 					<div>
 						<div>
+							<h1 className="title">Go {currentMember.name}!</h1>
+						</div>
+						<div>
 							<Timer currentMs={timer} styleClass={overdue ? 'timer timeout' : 'timer'}/>
 							<Form>
 								{isCurrentMember && 
