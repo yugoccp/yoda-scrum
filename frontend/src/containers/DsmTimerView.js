@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Button, List } from 'antd';
+import { Form, Button, List } from 'antd';
 import StormtrooperImg from '../assets/img/stormtrooper-head.png';
 import JediImg from '../assets/img/jedi-head.png';
 import R2d2Img from '../assets/img/r2d2-icon.png';
@@ -35,6 +35,7 @@ class DsmTimerView extends React.Component {
 		const currentMember = members[currentMemberIndex];
 		const overdue = timer > timeout;
 		const meetingStatusMessage = "Waiting meeting to start...";
+		const isCurrentMember = currentMember.name === username;
 		switch (meetingStatus) {
 			case 'WAITING':
 				return (
@@ -49,17 +50,23 @@ class DsmTimerView extends React.Component {
 					<div>
 						<div>
 							<Timer currentMs={timer} styleClass={overdue ? 'timer timeout' : 'timer'}/>
-							<List
-								style={{color: "white"}}
-								bordered
-								dataSource={members}
-								renderItem={item => (<ListItem item={item} />)}
-								></List>
-							<div>
-								<Button type="primary" onClick={next}>Next</Button>
-							</div>
+							<Form>
+								{isCurrentMember && 
+									<Form.Item>
+										<Button type="primary" onClick={next}>Next</Button>
+									</Form.Item>
+								}
+								<Form.Item>
+									<List
+										style={{color: "white"}}
+										bordered
+										dataSource={members}
+										renderItem={item => (<ListItem item={item} />)}
+										></List>
+								</Form.Item>
+							</Form>
 						</div>
-						{ overdue && currentMember.name === username &&
+						{ overdue && isCurrentMember &&
 							<div>
 								<DarthVader name={currentMember.name} />
 							</div>
