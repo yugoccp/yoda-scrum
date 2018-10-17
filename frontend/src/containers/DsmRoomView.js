@@ -21,6 +21,9 @@ class DsmRoomView extends Component {
 						<h1 className="title">Yoda DSM</h1>
 					</div>
 					<Form>
+						<Form.Item>
+							<Button type="primary" onClick={start}>Start DSM!</Button>
+						</Form.Item>
 						<Form.Item label="The choosen ones: ">
 							<List
 								style={{color: "white"}}
@@ -28,9 +31,6 @@ class DsmRoomView extends Component {
 								dataSource={members.map(m => m.name)}
 								renderItem={item => (<List.Item>{item}</List.Item>)}
 							></List>
-						</Form.Item>
-						<Form.Item>
-							<Button type="primary" onClick={start}>Start DSM!</Button>
 						</Form.Item>
 					</Form>
 				</div>
