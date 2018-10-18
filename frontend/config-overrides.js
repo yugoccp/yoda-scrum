@@ -7,12 +7,12 @@ module.exports = {
 			config.proxy = config.proxy ? config.proxy : {}
 
 			config.proxy['/socket.io/*'] = {
-				target: 'ws://localhost:3333',
+				target: 'ws://localhost:8080',
 				ws: true
 			};
 
 			config.proxy['/api/*'] = {
-				target: 'http://localhost:3333'
+				target: 'http://localhost:8080'
 			};
 
       return config;
