@@ -6,42 +6,46 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const utils = require('./utils');
 const dataProvider = require('./providers/fileDataProvider');
+const MemberStatus = require('./constants/MemberStatus');
+const MeetingStatus = require('./constants/MeetingStatus');
+const WsTypes = require('./constants/WsTypes');
 
 let members = [];
 
 let currentMemberIndex = -1;
 
-let currentStartTime = null;
+let meetingStatus = MeetingStatus.WAITING;
 
-let meetingStatus = 'WAITING';
-io.emit('meetingStatus', meetingStatus);
+function updateMeetingStatus(status) {
+	meetingStatus = status;
+	sendMeetingStatus(meetingStatus);
+}
 
-let timerIntervalId = null;
+function sendMeetingStatus(meetingStatus) {
+	io.emit(WsTypes.MEETING_STATUS, meetingStatus);
+}
 
+function sendMembers(members) {
+	io.emit(WsTypes.MEMBERS, members);
+}
+
+sendMeetingStatus(meetingStatus);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(express.static('../../frontend/build'));
-
-io.on('connection', (socket) => {
-	console.log('a user connected');
-	socket.on('disconnect', function() {
-    console.log('user disconnected');
-	});
-});
 
 app.get('/api/dsm/join', (req, res) => {
 	const name = req.query.name
 	if (!members.find(m => m.name === name)) {
 		members.push({
 			name,
-			status: 'PENDING',
-			timeInMs: 0
+			status: MemberStatus.PENDING,
+			timeInMs: 0,
+			startTime: undefined
 		});
-		io.emit('members', members);
-		// Change meeting status
-		meetingStatus = 'WAITING';
-		io.emit('meetingStatus', meetingStatus);
+		sendMembers(members);
+		updateMeetingStatus(MeetingStatus.WAITING);
 		res.send('ok');
 	} else {
 		res.send(new Error(`"${name}" is already in use.`));
@@ -54,41 +58,31 @@ app.get('/api/dsm/members', (req, res) => {
 
 app.get('/api/dsm/start', (req, res) => {
 	// Change meeting status
-	meetingStatus = 'IN_PROGRESS';
-	io.emit('meetingStatus', meetingStatus);
+	updateMeetingStatus(MeetingStatus.IN_PROGRESS);
 	// Shuffle members order
 	members = utils.shuffle(members);
-
 	// Emit choosen member
 	currentMemberIndex = 0;
-	members[currentMemberIndex].status = 'IN_PROGRESS';
-	io.emit('members', members);
-	io.emit('currentMemberIndex', currentMemberIndex);
-	currentStartTime = Date.now();
-	timerIntervalId = startTimerInterval(currentStartTime);
+	const currentMember = members[currentMemberIndex];
+	currentMember.status = MemberStatus.IN_PROGRESS;
+	currentMember.startTime = Date.now();
+	sendMembers(members);
 	res.send('ok');
 })
 
 app.get('/api/dsm/next', (req, res) => {
-	// Stop timer
-	clearInterval(timerIntervalId);
-	timerIntervalId = null;
+	// Update member
 	const currentMember = members[currentMemberIndex];
-
-	// Update member time
-	currentMember.timeInMs = Date.now() - currentStartTime;
-	// Update member status
-	currentMember.status = 'DONE';
-	io.emit('members', members);
+	currentMember.status = MemberStatus.DONE;
+	currentMember.timeInMs = req.query.timeInMs;
 
 	// Go to next member
 	++currentMemberIndex
-
 	if (currentMemberIndex < members.length) {
 		// Emit next selected member index
-		currentStartTime = Date.now();
-		io.emit('currentMemberIndex', currentMemberIndex);
-		timerIntervalId = startTimerInterval(currentStartTime);
+		const nextMember = members[currentMemberIndex]
+		nextMember.status = MemberStatus.IN_PROGRESS;
+		nextMember.startTime = Date.now();
 	} else {
 		// Store current DSM data
 		const timeInMs = members.reduce((time, m) => time += m.timeInMs, 0);
@@ -100,11 +94,9 @@ app.get('/api/dsm/next', (req, res) => {
 		// Reset members data
 		members = [];
 		// Change meeting status
-		meetingStatus = 'FINISHED';
-		io.emit('meetingStatus', meetingStatus);
-		// Emit invalid selected member index
-		io.emit('currentMemberIndex', -1);
+		updateMeetingStatus(MeetingStatus.FINISHED);
 	}
+	sendMembers(members);
 	res.send('ok');
 });
 
@@ -112,17 +104,6 @@ app.get('/api/dsm/data', (req, res) => {
 	const dsmData = dataProvider.findAllDsm();
 	res.send(dsmData);
 });
-
-function startTimerInterval(startTime) {
-	if (timerIntervalId) {
-		return timerIntervalId;
-	} else {
-		return setInterval(() => {
-			const currentTimer = Date.now() - startTime;
-			io.emit('timer', currentTimer);
-		}, 100);
-	}
-}
 
 const API_PORT = 3333;
 server.listen(API_PORT, () => {

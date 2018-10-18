@@ -1,4 +1,2 @@
-export const TIMER = 'timer';
-export const CURRENT_MEMBER_INDEX = 'currentMemberIndex';
-export const MEMBERS = 'members';
-export const MEETING_STATUS = 'meetingStatus';
+export const MEMBERS = 'MEMBERS';
+export const MEETING_STATUS = 'MEETING_STATUS';

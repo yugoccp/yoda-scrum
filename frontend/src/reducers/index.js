@@ -3,7 +3,6 @@ import * as types from '../constants/ActionTypes';
 const initialState = {
 	username: undefined,
 	members: [],
-	currentMemberIndex: -1,
 	timer: 0,
 	dsmData: {},
 	isDsmDataLoading: false,
@@ -17,8 +16,6 @@ const reducer = (state = initialState, action) => {
 			return {...state, username: action.username}
 		case types.UPDATE_TIMER:
 			return {...state, timer: action.timer}
-		case types.CURRENT_MEMBER_INDEX_SUCCESS:
-			return {...state, currentMemberIndex: action.index}
 		case types.FETCH_MEMBERS_SUCCESS:
 			return {...state, members: action.members}
 		case types.MEETING_STATUS_SUCCESS:

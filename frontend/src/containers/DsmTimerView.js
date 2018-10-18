@@ -8,6 +8,8 @@ import R2d2Img from '../assets/img/r2d2-icon.png';
 import { next, fetchMembers } from '../actions';
 import Timer from '../components/Timer';
 import DarthVader from '../components/char/DarthVader';
+import * as MemberStatus from '../constants/MemberStatus';
+import * as MeetingStatus from '../constants/MeetingStatus';
 
 // Setup timeout to 2 minutes
 const timeout = 1000*60*2;
@@ -24,39 +26,88 @@ const ListItem = function({item}) {
 		</List.Item>);
 }
 
+const Waiting = () => (
+	<div>
+			<div>
+				<h1 style={{color: "white"}}>Waiting meeting to start...</h1>
+			</div>
+		</div>
+)
+
 class DsmTimerView extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			timeInMs: 0,
+			timerIntervalId: undefined,
+			currentMember: undefined
+		}
+		this.handleNext = this.handleNext.bind(this);
+	}
+	
 
 	componentDidMount() {
 		this.props.fetchMembers();
 	}
 
+	componentDidUpdate() {
+		const {currentMember} = this.state;
+		const {members} = this.props;
+		const nextMember = members.find(m => m.status === MemberStatus.IN_PROGRESS);
+		if (!currentMember || currentMember.name !== nextMember.name) {
+			console.log(currentMember, nextMember);
+			this.setState({currentMember: nextMember});
+			this.startTimerInterval(nextMember.startTime);
+		}
+	}
+
+	startTimerInterval(startTime) {
+		const { timerIntervalId } = this.state;
+		if (!timerIntervalId) {
+			const timerIntervalId = setInterval(() => {
+				const timeInMs = Date.now() - startTime;
+				this.setState({timeInMs})
+			}, 100);
+			this.setState({timerIntervalId});
+		}
+	}
+
+	clearTimerInterval() {
+		const { timerIntervalId } = this.state;
+		if (timerIntervalId) {
+			clearInterval(timerIntervalId);
+			this.setState({timerIntervalId: undefined});
+		}
+	}
+
+	handleNext() {
+		this.clearTimerInterval();
+		this.props.next(this.state.timeInMs);
+	}
+
   render() {
-		const { username, timer, members, currentMemberIndex, next, meetingStatus } = this.props;
-		const currentMember = members[currentMemberIndex];
-		const overdue = timer > timeout;
-		const meetingStatusMessage = "Waiting meeting to start...";
-		const isCurrentMember = currentMember.name === username;
-		switch (meetingStatus) {
-			case 'WAITING':
-				return (
-					<div>
-						<div>
-							<h1 style={{color: "white"}}>{meetingStatusMessage}</h1>
-						</div>
-					</div>
-				);
-			case 'IN_PROGRESS':
+		const { timeInMs, currentMember } = this.state;
+		const { username, members, meetingStatus } = this.props;
+		const viewStatus = currentMember ? meetingStatus : MeetingStatus.WAITING;
+		console.log(viewStatus)
+		switch (viewStatus) {
+			case MeetingStatus.WAITING:
+			return <Waiting />
+			case MeetingStatus.IN_PROGRESS:
+				const overdue = timeInMs > timeout;
+				const isCurrentMember = currentMember.name === username;
 				return (
 					<div>
 						<div>
 							<h1 className="title">Go {currentMember.name}!</h1>
 						</div>
 						<div>
-							<Timer currentMs={timer} styleClass={overdue ? 'timer timeout' : 'timer'}/>
+							<Timer currentMs={timeInMs} styleClass={overdue ? 'timer timeout' : 'timer'}/>
 							<Form>
 								{isCurrentMember && 
 									<Form.Item>
-										<Button type="primary" onClick={next}>Next</Button>
+										<Button type="primary" onClick={this.handleNext}>Next</Button>
 									</Form.Item>
 								}
 								<Form.Item>
@@ -76,16 +127,10 @@ class DsmTimerView extends React.Component {
 						}
 					</div>
 				);
-			case 'FINISHED':
+			case MeetingStatus.FINISHED:
 				return <Redirect to='/dsm/dashboard'/>;
 			default:
-				return (
-					<div>
-						<div>
-							<h1 style={{color: "white"}}>{meetingStatusMessage}</h1>
-						</div>
-					</div>
-				);
+				return <Waiting />
 		};
   }
 }
@@ -93,14 +138,12 @@ class DsmTimerView extends React.Component {
 const mapStateToProps = state => ({
 	members: state.members,
 	username: state.username,
-	currentMemberIndex: state.currentMemberIndex,
-	timer: state.timer,
 	meetingStatus: state.meetingStatus
 })
 
 const mapDispatchToProps = dispatch => ({
 	fetchMembers: () => dispatch(fetchMembers()),
-	next: () => dispatch(next())
+	next: timeInMs => dispatch(next(timeInMs))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DsmTimerView);

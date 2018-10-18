@@ -26,8 +26,8 @@ Object.values(WsTypes).forEach(type => {
 	});
 });
 
-export function nextMember() {
-	return axios.get(`${apiServer}/dsm/next`);
+export function nextMember(timeInMs) {
+	return axios.get(`${apiServer}/dsm/next?timeInMs=${timeInMs}`);
 }
 
 export function startDsm() {

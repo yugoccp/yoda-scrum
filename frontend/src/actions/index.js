@@ -10,8 +10,6 @@ import * as types from '../constants/ActionTypes'
 
 export const joinSuccess = username => ({ type: types.JOIN_SUCCESS, username })
 
-export const currentMemberIndexSuccess = index => ({ type: types.CURRENT_MEMBER_INDEX_SUCCESS, index })
-
 export const updateTimer = timer => ({ type: types.UPDATE_TIMER, timer })
 
 export const updateUsername = username => ({type: types.UPDATE_USERNAME, username})
@@ -42,9 +40,9 @@ export function start() {
 	}
 }
 
-export function next() {
+export function next(timeInMs) {
 	return dispatch => {
-		nextMember().then(() => {
+		nextMember(timeInMs).then(() => {
 			console.log('go to next');
 		})
 	}
@@ -78,7 +76,5 @@ export function initSubscriptions() {
 	return dispatch => {
 		subscribe(wsTypes.MEMBERS, members => dispatch(fetchMembersSuccess(members)));
 		subscribe(wsTypes.MEETING_STATUS, meetingStatus => dispatch(meetingStatusSuccess(meetingStatus)));
-		subscribe(wsTypes.CURRENT_MEMBER_INDEX, index => dispatch(currentMemberIndexSuccess(index)));
-		subscribe(wsTypes.TIMER, timer => dispatch(updateTimer(timer)));
 	}
 }

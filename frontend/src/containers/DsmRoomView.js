@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { fetchMembers, start } from '../actions';
 import { Form, Button, List } from 'antd';
+import * as MeetingStatus from '../constants/MeetingStatus';
 
 class DsmRoomView extends Component {
 	
@@ -11,8 +12,8 @@ class DsmRoomView extends Component {
 	}
 
   render() {
-		const { members, start, currentMemberIndex } = this.props;
-		if (currentMemberIndex >= 0) {
+		const { members, start, meetingStatus } = this.props;
+		if (meetingStatus === MeetingStatus.IN_PROGRESS) {
 			return <Redirect to="/dsm/timer" />
 		} else {
 			return (
@@ -42,7 +43,7 @@ class DsmRoomView extends Component {
 const mapStateToProps = state => ({
 	members: state.members,
 	username: state.username,
-	currentMemberIndex: state.currentMemberIndex
+	meetingStatus: state.meetingStatus
 })
 
 const mapDispatchToProps = dispatch => ({
