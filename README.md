@@ -6,9 +6,9 @@ Before run the app, install dependencies for both /frontend and /backend project
 
     npm i
 
-To run the frontend app, go to /frontend folder and run the following
+To run the dev environment run the following
 
-    npm start
+    npm run start:dev
 
 This above command will start a Webpack-Dev-Server to serve frontend app and the ExpressJS API server.
 Webpack-Dev-Server is configured to redirect every request to api/* and /socket.io/* to API server.

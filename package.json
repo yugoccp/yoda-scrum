@@ -5,10 +5,11 @@
 	"scripts": {
 		"install:frontend": "npm i --prefix ./frontend",
 		"install:backend": "npm i --prefix ./backend",
-		"install": "npm run install:frontend & npm run install:backend",
+		"install": "npm run install:frontend && npm run install:backend",
 		"build:frontend": "npm run build --prefix ./frontend",
 		"postinstall": "npm run build:frontend",
-		"start:backend": "npm start --prefix ./backend",
-		"start": "npm run start:backend"
+		"start:prod": "npm start --prefix ./backend",
+		"start:dev": "npm run start:dev --prefix ./frontend",
+		"start": "npm run start:prod"
 	}
 }
