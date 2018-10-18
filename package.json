@@ -1,6 +1,7 @@
 {
 	"name": "yoda-scrum",
 	"version": "0.1.0",
+	"main": "./backend/server.js",
 	"scripts": {
 		"install:frontend": "npm i --prefix ./frontend",
 		"install:backend": "npm i --prefix ./backend",
