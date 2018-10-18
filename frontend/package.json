@@ -24,7 +24,7 @@
     "start": "concurrently --kill-others \"npm run start:app\" \"npm run start:server\"",
     "start:app": "react-app-rewired start",
     "start:server": "node ../backend/src/server.js",
-    "build": "react-app-rewired build",
+    "build": "react-scripts build",
     "test": "jest"
   },
   "devDependencies": {
