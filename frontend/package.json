@@ -2,14 +2,16 @@
   "name": "yoda-scrum-frontend",
   "version": "0.1.0",
   "dependencies": {
-    "antd": "^3.2.1",
+		"antd": "^3.2.1",
     "axios": "^0.18.0",
+		"concurrently": "^4.0.1",
     "highcharts": "^6.0.7",
     "highcharts-react-official": "highcharts/highcharts-react",
     "moment": "^2.21.0",
     "moment-business-days": "^1.0.6",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+		"react-app-rewired": "^1.6.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.1",
@@ -19,9 +21,9 @@
     "socket.io-client": "^2.1.1"
   },
   "scripts": {
-    "start": "concurrently --kill-others \"npm run start-app\" \"npm run start-server\"",
-    "start-app": "react-app-rewired start",
-    "start-server": "node ../backend/src/server.js",
+    "start": "concurrently --kill-others \"npm run start:app\" \"npm run start:server\"",
+    "start:app": "react-app-rewired start",
+    "start:server": "node ../backend/src/server.js",
     "build": "react-app-rewired build",
     "test": "jest"
   },
@@ -29,10 +31,8 @@
     "babel-jest": "^22.4.1",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
-    "concurrently": "^4.0.1",
     "jest": "^21.2.1",
     "raf": "^3.4.0",
-    "react-app-rewired": "^1.6.2",
     "react-test-renderer": "^16.2.0"
   }
 }
