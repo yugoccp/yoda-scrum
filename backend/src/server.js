@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -33,7 +34,7 @@ sendMeetingStatus(meetingStatus);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
-app.use(express.static('../../frontend/build'));
+app.use(express.static(path.join(__dirname, '../../frontend/build')));
 
 app.get('/api/dsm/join', (req, res) => {
 	const name = req.query.name
@@ -105,8 +106,9 @@ app.get('/api/dsm/data', (req, res) => {
 	res.send(dsmData);
 });
 
-const API_PORT = 3333;
-server.listen(API_PORT, () => {
-	console.log(`Listen to port ${API_PORT}`);
+var ip = process.env.IP || '0.0.0.0';
+var port = process.env.PORT || 8080;
+server.listen(port, ip, () => {
+	console.log(`Listen to port ${port}`);
 });
 
