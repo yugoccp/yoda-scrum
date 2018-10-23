@@ -1,0 +1,10 @@
+.itemName {
+  text-align: left;
+  text-transform: capitalize;
+  font-size: 28px;
+  margin-top: 16px;
+}
+
+.current {
+  background-color: #bdbdbd;
+}
