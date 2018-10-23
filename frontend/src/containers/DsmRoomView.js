@@ -30,7 +30,7 @@ class DsmRoomView extends Component {
 								style={{color: "white"}}
 								bordered
 								dataSource={members.map(m => m.name)}
-								renderItem={item => (<List.Item>{item}</List.Item>)}
+								renderItem={item => (<List.Item className="itemName">{item}</List.Item>)}
 							></List>
 						</Form.Item>
 					</Form>
