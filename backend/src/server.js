@@ -17,6 +17,10 @@ let currentMemberIndex = -1;
 
 let meetingStatus = MeetingStatus.WAITING;
 
+function removeMember(name) {
+	members = members.filter(m => m.name != name);
+}
+
 function updateMeetingStatus(status) {
 	meetingStatus = status;
 	sendMeetingStatus(meetingStatus);
@@ -56,6 +60,13 @@ app.get('/api/dsm/join', (req, res) => {
 app.get('/api/dsm/members', (req, res) => {
 	res.send(JSON.stringify(members));
 });
+
+
+app.delete('/api/dsm/members', (req, res) => {
+	removeMember(req.query.name);
+	res.send('ok');
+});
+
 
 app.get('/api/dsm/start', (req, res) => {
 	// Change meeting status
