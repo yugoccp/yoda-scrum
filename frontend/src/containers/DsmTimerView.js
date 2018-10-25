@@ -14,8 +14,7 @@ import {toTimerString} from '../utils';
 import "./DsmTimerView.css";
 
 // Setup timeout to 2 minutes
-// const timeout = 1000 * 60 * 2;
-const timeout = 1000 * 2;
+const timeout = 1000 * 60 * 2;
 
 const Waiting = () => (
   <div>
