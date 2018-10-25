@@ -45,3 +45,7 @@ export function getMembers() {
 export function getDsmData() {
 	return axios.get(`${apiServer}/dsm/data`);
 }
+
+export function removeMember(name) {
+	return axios.delete(`${apiServer}/dsm/members?name=${name}`);
+}

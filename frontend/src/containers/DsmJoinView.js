@@ -47,11 +47,11 @@ class DsmJoinView extends React.Component {
 						<h1 className="title">Yoda DSM</h1>
 					</div>
 					<Form>
-						<Form.Item label="Name">
-							<Input value={name} onChange={e => this.setState({name: e.target.value})}></Input>
-						</Form.Item>
 						<Form.Item>
 							<Button type="primary" onClick={this.handleJoin}>Join DSM</Button>
+						</Form.Item>
+						<Form.Item label="Name">
+							<Input value={name} onChange={e => this.setState({name: e.target.value})}></Input>
 						</Form.Item>
 					</Form>
 					<Yoda />

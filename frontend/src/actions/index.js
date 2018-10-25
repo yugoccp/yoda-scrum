@@ -4,6 +4,7 @@ import {
 	getDsmData,
 	startDsm,
 	joinDsm,
+	removeMember,
 	nextMember } from '../client';
 import * as wsTypes from '../constants/WsTypes'
 import * as types from '../constants/ActionTypes'
@@ -48,6 +49,13 @@ export function next(timeInMs) {
 	}
 }
 
+export function remove(name) {
+	return dispatch => {
+		removeMember(name).then(() => {
+			console.log(`${name} removed!`);
+		})
+	}
+}
 export function fetchDsmData() {
 	return dispatch => {
 		dispatch(isFetchDsmDataLoading(true));

@@ -23,18 +23,18 @@ function removeMember(name) {
 
 function updateMeetingStatus(status) {
 	meetingStatus = status;
-	sendMeetingStatus(meetingStatus);
+	notifyMeetingStatus();
 }
 
-function sendMeetingStatus(meetingStatus) {
+function notifyMeetingStatus() {
 	io.emit(WsTypes.MEETING_STATUS, meetingStatus);
 }
 
-function sendMembers(members) {
+function notifyMembers() {
 	io.emit(WsTypes.MEMBERS, members);
 }
 
-sendMeetingStatus(meetingStatus);
+notifyMeetingStatus();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
@@ -49,7 +49,7 @@ app.get('/api/dsm/join', (req, res) => {
 			timeInMs: 0,
 			startTime: undefined
 		});
-		sendMembers(members);
+		notifyMembers();
 		updateMeetingStatus(MeetingStatus.WAITING);
 		res.send('ok');
 	} else {
@@ -64,6 +64,7 @@ app.get('/api/dsm/members', (req, res) => {
 
 app.delete('/api/dsm/members', (req, res) => {
 	removeMember(req.query.name);
+	notifyMembers();
 	res.send('ok');
 });
 
@@ -78,7 +79,7 @@ app.get('/api/dsm/start', (req, res) => {
 	const currentMember = members[currentMemberIndex];
 	currentMember.status = MemberStatus.IN_PROGRESS;
 	currentMember.startTime = Date.now();
-	sendMembers(members);
+	notifyMembers();
 	res.send('ok');
 })
 
@@ -86,7 +87,7 @@ app.get('/api/dsm/next', (req, res) => {
 	// Update member
 	const currentMember = members[currentMemberIndex];
 	currentMember.status = MemberStatus.DONE;
-	currentMember.timeInMs = req.query.timeInMs;
+	currentMember.timeInMs = parseInt(req.query.timeInMs);
 
 	// Go to next member
 	++currentMemberIndex
@@ -97,7 +98,7 @@ app.get('/api/dsm/next', (req, res) => {
 		nextMember.startTime = Date.now();
 	} else {
 		// Store current DSM data
-		const timeInMs = members.reduce((time, m) => time += m.timeInMs, 0);
+		const timeInMs = members.reduce((time, m) => time += parseInt(m.timeInMs), 0);
 		dataProvider.saveDsm({
 			members,
 			timeInMs,
@@ -108,7 +109,7 @@ app.get('/api/dsm/next', (req, res) => {
 		// Change meeting status
 		updateMeetingStatus(MeetingStatus.FINISHED);
 	}
-	sendMembers(members);
+	notifyMembers();
 	res.send('ok');
 });
 

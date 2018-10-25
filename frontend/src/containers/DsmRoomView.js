@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { fetchMembers, start } from '../actions';
-import { Form, Button, List } from 'antd';
+import { fetchMembers, start, remove } from '../actions';
+import { Form, Button, Table } from 'antd';
 import * as MeetingStatus from '../constants/MeetingStatus';
 
 class DsmRoomView extends Component {
@@ -12,7 +12,7 @@ class DsmRoomView extends Component {
 	}
 
   render() {
-		const { members, start, meetingStatus } = this.props;
+		const { members, start, remove, meetingStatus } = this.props;
 		if (meetingStatus === MeetingStatus.IN_PROGRESS) {
 			return <Redirect to="/dsm/timer" />
 		} else {
@@ -26,12 +26,14 @@ class DsmRoomView extends Component {
 							<Button type="primary" onClick={start}>Start DSM!</Button>
 						</Form.Item>
 						<Form.Item label="The choosen ones: ">
-							<List
-								style={{color: "white"}}
-								bordered
-								dataSource={members.map(m => m.name)}
-								renderItem={item => (<List.Item className="itemName">{item}</List.Item>)}
-							></List>
+							<Table
+								className='table'
+								size='middle'
+								showHeader={false}
+								pagination={false}
+								dataSource={members}>
+								<Table.Column dataIndex='name'/>
+								<Table.Column align='right' render={(text, member) => <a onClick={() => remove(member.name)}>Remove</a>}/></Table>
 						</Form.Item>
 					</Form>
 				</div>
@@ -48,7 +50,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	fetchMembers: () => dispatch(fetchMembers()),
-	start: () => dispatch(start())
+	start: () => dispatch(start()),
+	remove: name => dispatch(remove(name))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DsmRoomView)

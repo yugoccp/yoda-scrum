@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { Form, Button, List } from "antd";
+import { Form, Button, Table } from "antd";
 import StormtrooperImg from "../assets/img/stormtrooper-head.png";
 import JediImg from "../assets/img/jedi-head.png";
 import R2d2Img from "../assets/img/r2d2-icon.png";
@@ -10,32 +10,12 @@ import Timer from "../components/Timer";
 import DarthVader from "../components/char/DarthVader";
 import * as MemberStatus from "../constants/MemberStatus";
 import * as MeetingStatus from "../constants/MeetingStatus";
+import {toTimerString} from '../utils';
 import "./DsmTimerView.css";
 
 // Setup timeout to 2 minutes
-const timeout = 1000 * 60 * 2;
-
-const ListItem = function({ item, currentClass }) {
-  const avatarImg =
-    item.status !== "DONE"
-      ? R2d2Img
-      : item.timeInMs > timeout
-        ? StormtrooperImg
-				: JediImg;
-  return (
-    <List.Item className={currentClass}>
-      <List.Item.Meta 
-        avatar={<img src={avatarImg} alt="img" />}
-        title={
-          <p className="itemName" style={{ color: "white" }}>
-            {item.name}
-          </p>
-        }
-      />
-      <div>{item.timeInMs}</div>
-    </List.Item>
-  );
-};
+// const timeout = 1000 * 60 * 2;
+const timeout = 1000 * 2;
 
 const Waiting = () => (
   <div>
@@ -51,7 +31,7 @@ class DsmTimerView extends React.Component {
     this.state = {
       timeInMs: 0,
       timerIntervalId: undefined,
-      currentMember: undefined
+			currentMember: undefined
     };
     this.handleNext = this.handleNext.bind(this);
   }
@@ -60,12 +40,12 @@ class DsmTimerView extends React.Component {
     this.props.fetchMembers();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { currentMember } = this.state;
-    const { members } = this.props;
+		const { members } = this.props;
+
     const nextMember = members.find(m => m.status === MemberStatus.IN_PROGRESS);
     if (!currentMember || currentMember.name !== nextMember.name) {
-      console.log(currentMember, nextMember);
       this.setState({ currentMember: nextMember });
       this.startTimerInterval(nextMember.startTime);
     }
@@ -92,14 +72,22 @@ class DsmTimerView extends React.Component {
 
   handleNext() {
     this.clearTimerInterval();
-    this.props.next(this.state.timeInMs);
+		this.props.next(this.state.timeInMs);
   }
 
   render() {
     const { timeInMs, currentMember } = this.state;
-    const { username, members, meetingStatus } = this.props;
-    const viewStatus = currentMember ? meetingStatus : MeetingStatus.WAITING;
-    console.log(viewStatus);
+    const { username, meetingStatus, members } = this.props;
+		const viewStatus = currentMember ? meetingStatus : MeetingStatus.WAITING;
+		const tableDataSource = members.map(m => {
+			const avatarImg = m.status !== MemberStatus.DONE ? R2d2Img : m.timeInMs > timeout ? StormtrooperImg : JediImg;
+			return {
+				key: m.name,
+				avatar: avatarImg,
+				name: m.name,
+				time: toTimerString(m.timeInMs)
+			};
+		});
     switch (viewStatus) {
       case MeetingStatus.WAITING:
         return <Waiting />;
@@ -117,25 +105,33 @@ class DsmTimerView extends React.Component {
                 styleClass={overdue ? "timer timeout" : "timer"}
               />
               <Form>
-                {isCurrentMember && (
+                {/* {isCurrentMember && (
                   <Form.Item>
                     <Button type="primary" onClick={this.handleNext}>
                       Next
                     </Button>
                   </Form.Item>
-                )}
+								)} */}
+								 <Form.Item>
+                    <Button type="primary" onClick={this.handleNext}>
+                      Next
+                    </Button>
+                  </Form.Item>
                 <Form.Item>
-                  <List
-                    style={{ color: "white" }}
-                    bordered
-                    dataSource={members}
-                    renderItem={item => <ListItem item={item} currentClass={isCurrentMember?'current':''}/>}
-                  />
+                  <Table
+										className='table'
+										size='middle'
+										showHeader={false}
+										pagination={false}
+										dataSource={tableDataSource}>
+										<Table.Column dataIndex='avatar' render={img => <img src={img} alt='avatar'/>}/>
+										<Table.Column dataIndex='name'/>
+										<Table.Column dataIndex='time' align='right' className='timer-digit'/>
+									</Table>
                 </Form.Item>
               </Form>
             </div>
-            {overdue &&
-              isCurrentMember && (
+            {overdue && isCurrentMember && (
                 <div>
                   <DarthVader name={currentMember.name} />
                 </div>
