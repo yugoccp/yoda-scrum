@@ -16,3 +16,15 @@ export function shuffle(array){
 
   return array;
 }
+
+export function toTimerString(timeInMs) {
+	const min = Math.floor(timeInMs/60000);
+  const sec = Math.floor((timeInMs/1000)%60);
+  const msec = Math.floor((timeInMs/10)%100);
+
+  const minStr = min < 10 ? '0' + min : min;
+  const secStr = sec < 10 ? '0' + sec : sec;
+	const msecStr = msec < 10 ? '0' + msec : msec;
+	
+	return `${minStr}:${secStr}:${msecStr}`
+}
