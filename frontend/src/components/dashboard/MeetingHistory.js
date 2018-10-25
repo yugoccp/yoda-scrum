@@ -44,7 +44,6 @@ const MeetingHistory = ({ data }) => {
       },
       series: historyLine
     }
-		console.log(historyLine);
     return <HighchartsReact
       highcharts={Highcharts}
       constructorType={'chart'}
