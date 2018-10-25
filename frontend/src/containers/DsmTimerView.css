@@ -1,8 +1,7 @@
 .itemName {
   text-align: left;
   text-transform: capitalize;
-  font-size: 28px;
-  margin-top: 16px;
+  font-size: 14px;
 }
 
 .current {
