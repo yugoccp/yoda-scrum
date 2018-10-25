@@ -6,16 +6,17 @@ function buildHistoryLine(data) {
 
   const historyLineData = data.reduce((result, d) => {
 
-      result['meeting'].data.push([d.date, d.timeInMs]);
+			const value = [d.date, parseInt(d.timeInMs)];
+      result['meeting'].data.push(value);
 
       d.members.forEach(m => {
         if (result[m.name]) {
-          result[m.name].data.push([d.date, m.timeInMs]);
+          result[m.name].data.push(value);
         } else {
           result[m.name] = {
             name: m.name,
             type: 'spline',
-            data: [[d.date, m.timeInMs]]
+            data: [value]
           };
         }
       })
@@ -43,7 +44,7 @@ const MeetingHistory = ({ data }) => {
       },
       series: historyLine
     }
-
+		console.log(historyLine);
     return <HighchartsReact
       highcharts={Highcharts}
       constructorType={'chart'}

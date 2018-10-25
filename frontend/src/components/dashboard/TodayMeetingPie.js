@@ -4,7 +4,7 @@ import HighchartsReact from 'highcharts-react-official';
 
 const TodayMeetingPie = ({ data }) => {
 	if (data.length > 0) {
-		const timeByMember = data.map(m => ({ name: m.name, y: m.timeInMs }));
+		const timeByMember = data.map(m => ({ name: m.name, y: parseInt(m.timeInMs) }));
 		const options = {
 			chart: {
 				plotBackgroundColor: null,
