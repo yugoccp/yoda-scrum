@@ -43,11 +43,13 @@ class DsmTimerView extends React.Component {
     const { currentMember } = this.state;
 		const { members } = this.props;
 
-    const nextMember = members.find(m => m.status === MemberStatus.IN_PROGRESS);
-    if (!currentMember || currentMember.name !== nextMember.name) {
-      this.setState({ currentMember: nextMember });
-      this.startTimerInterval(nextMember.startTime);
-    }
+		const memberInProgress = members.find(m => m.status === MemberStatus.IN_PROGRESS);
+		if (memberInProgress) {
+			if (!currentMember || currentMember.name !== memberInProgress.name) {
+				this.setState({ currentMember: memberInProgress });
+				this.startTimerInterval(memberInProgress.startTime);
+			}
+		}
   }
 
   startTimerInterval(startTime) {

@@ -1,12 +1,13 @@
 import React from 'react';
 import Highcharts from 'highcharts/highcharts'
 import HighchartsReact from 'highcharts-react-official'
+import {toTimerString} from '../../utils';
 
 function buildHistoryLine(data) {
 
   const historyLineData = data.reduce((result, d) => {
 
-			const value = [d.date, parseInt(d.timeInMs)];
+			const value = [d.date, parseInt(d.timeInMs, 10)];
       result['meeting'].data.push(value);
 
       d.members.forEach(m => {
@@ -41,7 +42,14 @@ const MeetingHistory = ({ data }) => {
       },
       xAxis: {
         type: 'datetime'
-      },
+			},
+			yAxis: {
+				labels: {
+					formatter: function() {
+						return toTimerString(this.value);
+					}
+				}
+			},
       series: historyLine
     }
     return <HighchartsReact
