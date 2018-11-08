@@ -9,7 +9,10 @@
 		"build:frontend": "npm run build --prefix ./frontend",
 		"postinstall": "npm run build:frontend",
 		"start:prod": "npm start --prefix ./backend",
-		"start:dev": "npm run start:dev --prefix ./frontend",
+		"start:dev": "concurrently --kill-others \"npm run start:dev --prefix ./frontend\" \"npm start --prefix ./backend\"",
 		"start": "npm run start:prod"
+	},
+	"devDependencies": {
+		"concurrently": "^4.0.1"
 	}
 }
